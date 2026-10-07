@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101217"><meta name="description" content="Gerador GUMES: BIN, validade, CVV e quantidade configuráveis com checksum de Luhn.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GUMES</title><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23101217'/%3E%3Cpath d='M21 19 10 32l11 13m22-26 11 13-11 13M36 16l-8 32' fill='none' stroke='%23c4f879' stroke-width='5'/%3E%3C/svg%3E"><link rel="stylesheet" href="./style.css"><script defer src="./app.js"></script>
+</head>
+<body>
+<div class="shell">
+<header><a class="brand" href="./" aria-label="Gerador GUMES início"><img class="profile-bubble" src="./gumes-profile.png" alt="Perfil GUMES" width="48" height="48"><span>Gerador <strong>GUMES</strong></span></a><span class="badge">GUMES</span></header>
+<main>
+<div class="intro"><div><p class="eyebrow">GERADOR GUMES</p><h1>Gere números.<br><span>Do seu jeito.</span></h1><p class="lead">Configure BIN, validade, CVV e quantidade para gerar seu lote.</p></div><span class="local">Processamento no seu aparelho</span></div>
+<div class="workspace">
+<section class="panel settings" aria-labelledby="settings-title"><div class="section-heading"><span class="step">01</span><h2 id="settings-title">Configurar geração</h2></div>
+<form id="generate-form">
+<label for="bin">BIN <span>1 a 16 dígitos</span></label><input id="bin" type="text" inputmode="numeric" autocomplete="off" minlength="1" maxlength="16" pattern="[1-9][0-9]{0,15}" placeholder="Ex.: 424242" required>
+<p class="hint compact">Informe os dígitos iniciais ou um número completo de 16 dígitos.</p>
+<label for="cvv">CVV <span>Opcional</span></label><input id="cvv" type="text" inputmode="numeric" autocomplete="off" maxlength="3" pattern="[0-9]{3}" placeholder="Aleatório se vazio">
+<p class="hint compact">Informe 3 dígitos ou deixe vazio para sortear.</p>
+<label for="quantity">Quantidade <span>1 a 1000</span></label><input id="quantity" type="number" min="1" max="1000" value="10" required inputmode="numeric">
+<fieldset><legend>Validade</legend><div class="segments"><label><input type="radio" name="mode" value="random" checked><span>Aleatória</span></label><label><input type="radio" name="mode" value="manual"><span>Manual</span></label><label><input type="radio" name="mode" value="range"><span>Intervalo</span></label></div></fieldset>
+<div id="random-fields" class="hint">Mês e ano sorteados entre o mês atual e os próximos 6 anos.</div>
+<div id="manual-fields" class="fields" hidden><div><label for="month">Mês</label><select id="month"></select></div><div><label for="year">Ano</label><input id="year" type="number" inputmode="numeric"></div></div>
+<div id="range-fields" class="fields" hidden><div><label for="year-start">Ano inicial</label><input id="year-start" type="number" inputmode="numeric"></div><div><label for="year-end">Ano final</label><input id="year-end" type="number" inputmode="numeric"></div></div>
+<p class="error" id="generate-error" role="alert"></p><button class="primary" type="submit">Gerar números <span aria-hidden="true">＋</span></button>
+<p class="note">Os dígitos informados são preservados. Prefixos longos podem resultar em números repetidos no lote.</p></form></section>
+<section class="panel output" aria-labelledby="output-title"><div class="output-top"><div class="section-heading"><span class="step">02</span><h2 id="output-title">Resultados</h2></div><span class="counter" id="count">0 registros</span></div>
+<div class="table-wrap"><label class="sr-only" for="results">Resultados no formato cc|mes|ano|cvv</label><textarea id="results" class="result-lines" readonly wrap="off" spellcheck="false" hidden></textarea><div class="empty" id="empty"><span class="empty-symbol" aria-hidden="true">[ &nbsp; ]</span><h3>Pronto para gerar</h3><p>Escolha suas opções ao lado<br>e gere o primeiro lote.</p></div></div><div class="output-footer"><span id="output-status" role="status" aria-live="polite">Aguardando geração</span><span>CC|MES|ANO|CVV</span></div></section>
+</div>
+<section class="panel checker" aria-labelledby="checker-title">
+<div class="section-heading"><span class="step">03</span><h2 id="checker-title">Validar lote</h2><span class="badge">SIMULAÇÃO LOCAL</span></div>
+<form id="check-form"><label for="check-input">Cole os cartões <span>Um por linha · até 1000</span></label><textarea id="check-input" class="check-input" placeholder="cc|mes|ano|cvv" spellcheck="false" required></textarea>
+<p id="check-error" class="error" role="alert"></p><button id="check-button" class="primary" type="submit">Validar</button></form>
+<p id="check-status" class="checker-help" role="status" aria-live="polite">Aguardando validação</p>
+<div class="check-columns"><section class="check-group approved"><h3>Aprovado <span id="total-approved">0</span></h3><div id="list-approved" class="check-list"></div></section><section class="check-group declined"><h3>Reprovado <span id="total-declined">0</span></h3><div id="list-declined" class="check-list"></div></section><section class="check-group errored"><h3>Erro <span id="total-error">0</span></h3><div id="list-error" class="check-list"></div></section></div>
+</section>
+<details class="install"><summary>Adicionar à tela inicial</summary><div><p><strong>iPhone:</strong> abra no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.</p><p><strong>Android:</strong> no menu do navegador, escolha “Instalar app” ou “Adicionar à tela inicial”.</p><p><strong>Desktop:</strong> use a opção de instalação do navegador, quando disponível.</p><button id="install-button" class="secondary" hidden>Instalar app</button></div></details>
+</main><footer><span>Gerador GUMES</span><span>Simulação local.</span></footer>
+</div>
+</body></html>
